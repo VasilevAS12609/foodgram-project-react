@@ -20,10 +20,14 @@ class User(AbstractUser):
         default=USER
     )
     username = models.CharField('username', max_length=150, unique=True)
-    password = models.TextField('password', max_length=150)
     email = models.EmailField('e-mail', max_length=254, unique=True)
     first_name = models.TextField('first_name', max_length=150)
     last_name = models.TextField('last_name', max_length=150)
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        ordering = ('username',)
 
     @property
     def is_admin(self):
@@ -31,8 +35,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-        ordering = ('username',)

@@ -12,9 +12,9 @@ from .models import User
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
         model = User
-        fields = [
+        fields = (
             'email', 'id', 'username', 'first_name', 'last_name', 'password'
-        ]
+        )
 
 
 class UserSerializer(serializers.ModelSerializer, IsSubscribedMixin):
@@ -26,10 +26,10 @@ class UserSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     )
 
     class Meta:
-        fields = [
+        fields = (
             'email', 'id', 'username', 'first_name',
             'last_name', 'is_subscribed'
-        ]
+        )
         model = User
 
 
@@ -45,10 +45,10 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     class Meta:
         model = User
-        fields = [
+        fields = (
             'email', 'id', 'username', 'first_name', 'last_name',
             'recipes', 'recipes_count', 'is_subscribed'
-        ]
+        )
 
     def validate(self, data):
         author = data['followed']

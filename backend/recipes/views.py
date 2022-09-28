@@ -6,7 +6,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from reportlab.pdfgen import canvas
 
 from users.permissions import AuthorOrReadOnly
 
@@ -19,18 +18,18 @@ from .serializers import (FavoritedSerializer, IngredientSerializer,
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
     serializer_class = RecipeSerializer
-    permission_classes = [AuthorOrReadOnly]
+    permission_classes = (AuthorOrReadOnly,)
 
     @action(
         detail=True,
-        methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
+        methods=['GET', 'POST', 'DELETE'],
+        permission_classes=(IsAuthenticated,),
         url_path='favorite'
     )
-    def favorite(self, request, pk):
+    def favorite_and_shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
         if request.method == 'POST':
@@ -54,7 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['GET', 'POST', 'DELETE'],
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -113,7 +112,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['GET'],
         url_path='download_shopping_cart',
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
         try:

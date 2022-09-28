@@ -1,6 +1,5 @@
 import traceback
 
-from django.db import IntegrityError
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.mixins import IsSubscribedMixin
@@ -88,9 +87,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        try:
+        if self.context.get('request').user:
             user = self.context.get('request').user
-        except:
+        else:
             user = self.context.get('user')
         callname_function = format(traceback.extract_stack()[-2][2])
         if callname_function == 'get_is_favorited':
@@ -110,12 +109,13 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         context = self.context['request']
         ingredients = validated_data.pop('recipe_ingredients')
-        try:
+        if Recipe.objects.create(**validated_data,
+                                 author=self.context.get('request').user):
             recipe = Recipe.objects.create(
                 **validated_data,
                 author=self.context.get('request').user
             )
-        except IntegrityError as err:
+        else:
             pass
         tags_set = context.data['tags']
         for tag in tags_set:

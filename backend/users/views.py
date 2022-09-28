@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 
@@ -20,7 +20,7 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=['GET', 'POST', 'DELETE'],
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
         followed = get_object_or_404(User, id=id)
@@ -53,7 +53,7 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=['GET'],
-        permission_classes=[IsAuthenticated],
+        permission_classes=(IsAuthenticated,),
         url_path='subscriptions'
     )
     def subscriptions(self, request):
