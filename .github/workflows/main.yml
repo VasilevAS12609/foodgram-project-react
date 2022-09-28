@@ -50,7 +50,7 @@ jobs:
       - build_backend
       - build_frontend
     steps:
-      - name: executing remote ssh commands to deploy1
+      - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
