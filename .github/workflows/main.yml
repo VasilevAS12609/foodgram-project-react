@@ -55,7 +55,7 @@ jobs:
         refs/heads/master
       ', github.ref)
     steps:
-      - name: executing remote ssh commands to deploy
+      - name: executing remote ssh commands to deploy1
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
