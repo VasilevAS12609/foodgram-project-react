@@ -8,7 +8,7 @@ volumes:
 services:
 
   frontend:
-    image: vasilevas12609/foodgram_backend:latest
+    image: vasilevas12609/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
   db:
@@ -19,7 +19,7 @@ services:
     env_file:
       - ./.env
   web:
-    image: vasilevas12609/foodgram_frontend:latest
+    image: vasilevas12609/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/code/backend_static/
