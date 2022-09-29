@@ -22,8 +22,8 @@ services:
     image: vasilevas12609/foodgram_backend:latest
     restart: always
     volumes:
-      - static_value:/code/backend_static/
-      - media_value:/code/backend_media/
+      - static_value:/app/static/
+      - media_value:/app/media/
     depends_on:
       - db
     env_file:
