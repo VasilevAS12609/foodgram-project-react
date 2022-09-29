@@ -20,7 +20,6 @@ services:
       - ./.env
   web:
     image: vasilevas12609/foodgram_backend:latest
-#    build: ../backend
     restart: always
     volumes:
       - static_value:/app/static/
