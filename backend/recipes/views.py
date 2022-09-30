@@ -23,32 +23,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrReadOnly,)
 
+    @staticmethod
+    def post_method_for_actions(request, pk, serializers):
+        data = {'user': request.user.id, 'recipe': pk}
+        serializer = serializers(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def delete_method_for_actions(request, pk, model):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+        model_instance = get_object_or_404(model, user=user, recipe=recipe)
+        model_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(
         detail=True,
         methods=['GET', 'POST', 'DELETE'],
-        permission_classes=(IsAuthenticated,),
-        url_path='favorite'
+        permission_classes=(IsAuthenticated,)
     )
-    def favorite_and_shopping_cart(self, request, pk):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        user = request.user
-        if request.method == 'POST':
-            favorite_recipe, created = Favorite.objects.get_or_create(
-                user=user, recipe=recipe
-            )
-            if created is True:
-                serializer = FavoritedSerializer()
-                return Response(
-                    serializer.to_representation(instance=favorite_recipe),
-                    status=status.HTTP_201_CREATED
-                )
-        if request.method == 'DELETE':
-            Favorite.objects.filter(
-                user=user,
-                recipe=recipe
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    def favorite(self, request, pk):
+        return self.post_method_for_actions(
+            request=request, pk=pk, serializers=FavoritedSerializer)
+
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk):
+        return self.delete_method_for_actions(
+            request=request, pk=pk, model=Favorite)
 
     @action(
         detail=True,
@@ -56,28 +59,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def shopping_cart(self, request, pk):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        user = request.user
-        if request.method == 'POST':
-            recipe, created = ShoppingCart.objects.get_or_create(
-                user=user, recipe=recipe
-            )
-            if created is True:
-                serializer = ShoppingCartSerializer()
-                return Response(
-                    serializer.to_representation(instance=recipe),
-                    status=status.HTTP_201_CREATED
-                )
-            return Response(
-                {'errors': 'Рецепт уже в корзине покупок'},
-                status=status.HTTP_201_CREATED
-            )
-        if request.method == 'DELETE':
-            ShoppingCart.objects.filter(
-                user=user, recipe=recipe
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return self.post_method_for_actions(
+            request, pk, serializers=ShoppingCartSerializer
+        )
+
+    @shopping_cart.mapping.delete
+    def delete_shopping_cart(self, request, pk):
+        return self.delete_method_for_actions(
+            request=request, pk=pk, model=ShoppingCart)
 
     def get_shopping_list(self, request):
         shopping_cart = ShoppingCart.objects.filter(user=request.user).all()
