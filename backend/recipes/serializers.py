@@ -1,9 +1,7 @@
-import traceback
-
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from users.mixins import IsSubscribedMixin
 
+from users.mixins import IsSubscribedMixin
 from users.models import User
 
 from .models import (Favorite, Ingredient, IngredientsRecipe, Recipe,

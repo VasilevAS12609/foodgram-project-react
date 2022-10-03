@@ -1,5 +1,4 @@
-from djoser.serializers import \
-    UserCreateSerializer as BaseUserRegistrationSerializer
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers, validators
 
 from recipes.models import Follow, Recipe
@@ -9,8 +8,8 @@ from users.mixins import IsSubscribedMixin
 from .models import User
 
 
-class UserRegistrationSerializer(BaseUserRegistrationSerializer):
-    class Meta(BaseUserRegistrationSerializer.Meta):
+class UserRegistrationSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
         model = User
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name', 'password'
@@ -56,7 +55,7 @@ class UserSubscribeSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         if user == author:
             raise serializers.ValidationError('Нельзя подписаться на себя!')
         if (Follow.objects.filter(author=author, user=user).exists()):
-            raise serializers.ValidationError('Вы уже подписаны на этого автора!')
+            raise serializers.ValidationError('Вы уже подписаны на автора!')
         return data
 
     def create(self, validated_data):
