@@ -83,7 +83,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         exclude = ('pub_date',)
 
-    def get_status_func(self, data):
+    def get_status_func(self, data, model):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
@@ -91,20 +91,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             user = self.context.get('request').user
         else:
             user = self.context.get('user')
-        callname_function = format(traceback.extract_stack()[-2][2])
-        if callname_function == 'get_is_favorited':
-            init_queryset = Favorite.objects.filter(recipe=data.id, user=user)
-        elif callname_function == 'get_is_in_shopping_cart':
-            init_queryset = ShoppingCart.objects.filter(recipe=data, user=user)
+        init_queryset = model.objects.filter(recipe=data, user=user)
         if init_queryset.exists():
             return True
         return False
 
     def get_is_favorited(self, data):
-        return self.get_status_func(data)
+        return self.get_status_func(data, model=Favorite)
 
     def get_is_in_shopping_cart(self, data):
-        return self.get_status_func(data)
+        return self.get_status_func(data, model=ShoppingCart)
 
     def create(self, validated_data):
         context = self.context['request']
@@ -208,4 +204,4 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCart
-        fields = ('id', 'cooking_time', 'name', 'image')
+        fields = ('id', 'cooking_time', 'name', 'image', 'user', 'recipe')
