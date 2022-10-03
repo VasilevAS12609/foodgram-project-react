@@ -185,7 +185,7 @@ class FavoritedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = ('id', 'cooking_time', 'name', 'image')
+        fields = ('id', 'cooking_time', 'name', 'image', 'user', 'recipe')
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
