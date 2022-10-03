@@ -25,7 +25,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def post_method_for_actions(request, pk, serializers):
-        data = {'user': request.user.id, 'recipe': pk}
+        data = {'user': request.user.id, 'id': pk}
         serializer = serializers(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -34,7 +34,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @staticmethod
     def delete_method_for_actions(request, pk, model):
         user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
+        recipe = get_object_or_404(Recipe, pk=pk)
         model_instance = get_object_or_404(model, user=user, recipe=recipe)
         model_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
