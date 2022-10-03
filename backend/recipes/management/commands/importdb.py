@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         BASE_DIR = settings.BASE_DIR
-        file = BASE_DIR + '\data\ingredients.json'
+        file = BASE_DIR + '/data/ingredients.json'
         with open(file, "r", encoding='utf-8') as read_file:
             data = json.load(read_file)
             for i in data:
