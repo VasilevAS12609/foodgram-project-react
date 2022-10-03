@@ -65,3 +65,9 @@ sudo apt install docker-compose
 ---
 ### Автор проекта:
 **[Алексей Васильев](https://github.com/VasilevAS12609)**
+### Информация для ревью:
+Боевой сервер - **[http://vasilevdev.ddns.net/](http://vasilevdev.ddns.net/)**
+
+Данные админки:
+ - почта: vasilevas12609@gmail.com
+ - пароль: YPTest2022
